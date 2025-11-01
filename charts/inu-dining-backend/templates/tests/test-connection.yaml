@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "inu-dining-backend.fullname" . }}-test-connection"
+  name: "{{ include "Dining-backend.fullname" . }}-test-connection"
   labels:
-    {{- include "inu-dining-backend.labels" . | nindent 4 }}
+    {{- include "Dining-backend.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "inu-dining-backend.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "Dining-backend.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never

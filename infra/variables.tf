@@ -24,7 +24,7 @@ variable "github_owner" {
 variable "github_repo_name" {
   description = "The name of the GitHub repository."
   type        = string
-  default     = "inu-dining-backend"
+  default     = "Dining-backend"
 }
 
 # This variable is required by helm.tf and passed in by cloudbuild.yaml
@@ -37,7 +37,7 @@ variable "image_tag" {
  variable "cluster_name" {
    description = "Name of the GKE cluster"
    type        = string
-  default     = "inu-dining-backend-cluster"      # ← match the actual name
+  default     = "Dining-backend-cluster"      # ← match the actual name
  }
 
 variable "zone" {
@@ -53,18 +53,18 @@ variable "github_app_installation_id" {
 # Cloud Build repository resource ID (safe, no leading '-')
 variable "cloudbuild_repo_id" {
   type    = string
-  default = "inu-dining-backend"
+  default = "Dining-backend"
 }
 
 # Actual GitHub repo name (yours starts with a leading '-')
 variable "github_repo_name_on_github" {
   type    = string
-  default = "inu-dining-backend"
+  default = "Dining-backend"
 }
 variable "cb_runner_sa_email" {
   description = "Service account email Cloud Build will use"
   type        = string
-  default     = "inu-dining-backend-cb-sa@digital-shadow-472610-a9.iam.gserviceaccount.com"
+  default     = "Dining-backend-cb-sa@digital-shadow-472610-a9.iam.gserviceaccount.com"
 }
 
 

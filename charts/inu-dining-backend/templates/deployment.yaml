@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "inu-dining-backend.fullname" . }}
+  name: {{ include "Dining-backend.fullname" . }}
   labels:
-    {{- include "inu-dining-backend.labels" . | nindent 4 }}
+    {{- include "Dining-backend.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "inu-dining-backend.selectorLabels" . | nindent 6 }}
+      {{- include "Dining-backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "inu-dining-backend.labels" . | nindent 8 }}
+        {{- include "Dining-backend.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "inu-dining-backend.serviceAccountName" . }}
+      serviceAccountName: {{ include "Dining-backend.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}

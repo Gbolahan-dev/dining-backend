@@ -29,7 +29,7 @@ resource "google_service_account_iam_member" "app_user_wi_prod" {
 
 # Cloud Build Service Account
 resource "google_service_account" "cloudbuild_sa" {
-  account_id   = "inu-dining-backend-cb-sa"
+  account_id   = "Dining-backend-cb-sa"
   display_name = "Cloud Build SA for Sample Inu dining App"
 }
 resource "google_project_iam_member" "cb_sa_permissions" {

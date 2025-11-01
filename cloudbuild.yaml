@@ -3,12 +3,12 @@ steps:
   # STEP 0: build
   - id: "Build"
     name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "us-central1-docker.pkg.dev/${PROJECT_ID}/inu-dining-backend-repo/inu-dining-backend:${SHORT_SHA}", "."]
+    args: ["build", "-t", "us-central1-docker.pkg.dev/${PROJECT_ID}/Dining-backend-repo/Dining-backend:${SHORT_SHA}", "."]
 
   # STEP 1: push
   - id: "PUSH-IMAGE"
     name: "gcr.io/cloud-builders/docker"
-    args: ["push", "us-central1-docker.pkg.dev/${PROJECT_ID}/inu-dining-backend-repo/inu-dining-backend:${SHORT_SHA}"]
+    args: ["push", "us-central1-docker.pkg.dev/${PROJECT_ID}/Dining-backend-repo/Dining-backend:${SHORT_SHA}"]
     waitFor: ["Build"]
 
   # STEP 2: deploy to staging (unconditional, or gate if you prefer)

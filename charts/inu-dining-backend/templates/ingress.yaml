@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "inu-dining-backend.fullname" . }}
+  name: {{ include "Dining-backend.fullname" . }}
   labels:
-    {{- include "inu-dining-backend.labels" . | nindent 4 }}
+    {{- include "Dining-backend.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -35,7 +35,7 @@ spec:
             {{- end }}
             backend:
               service:
-                name: {{ include "inu-dining-backend.fullname" $ }}
+                name: {{ include "Dining-backend.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
           {{- end }}
