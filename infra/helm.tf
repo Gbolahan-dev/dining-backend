@@ -4,7 +4,7 @@ resource "helm_release" "staging" {
   chart            = "../charts/inu-dining-backend" # Path to new chart
   namespace        = kubernetes_namespace.staging.metadata[0].name
   create_namespace = false
-  atomic          = false           # auto-rollback on failure
+  atomic          = true           # auto-rollback on failure
   cleanup_on_fail = true           # remove broken release so name isn’t “stuck”
   timeout         = 900            # 15m to wait for pods to become Ready
   wait            = true
