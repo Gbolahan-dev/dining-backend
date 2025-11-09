@@ -20,6 +20,12 @@ resource "google_container_cluster" "main" {
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
   }
+
+  addons_config {
+    http_load_balancing {
+      disabled = false
+    }
+  }
 }
 
 resource "google_container_node_pool" "main_pool" {
