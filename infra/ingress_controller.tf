@@ -15,5 +15,5 @@ resource "helm_release" "nginx_ingress" {
     value = "LoadBalancer"
   }
 
-  depends_on = [google_container_cluster.main]
+  depends_on = [google_container_cluster.main, kubernetes_cluster_role_binding.cloudbuild_admin]
 }
