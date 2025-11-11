@@ -45,7 +45,7 @@ resource "helm_release" "staging" {
     })
   ]
 
-  depends_on = [kubernetes_secret.db_secret_staging, google_compute_managed_ssl_certificate.staging_cert]
+  depends_on = [kubernetes_secret.db_secret_staging, google_compute_managed_ssl_certificate.staging_cert, kubernetes_ingress_class_v1.gce]
 }
 
 resource "helm_release" "production" {
@@ -94,6 +94,6 @@ resource "helm_release" "production" {
     })
   ]
 
-  depends_on = [kubernetes_secret.db_secret_prod, google_compute_managed_ssl_certificate.prod_cert]
+  depends_on = [kubernetes_secret.db_secret_prod, google_compute_managed_ssl_certificate.prod_cert, kubernetes_ingress_class_v1.gce]
 }
 
