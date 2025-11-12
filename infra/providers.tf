@@ -4,7 +4,7 @@ terraform {
     google-beta = { source = "hashicorp/google-beta", version = "~> 5.0"}
     kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.20"}
     helm = { source = "hashicorp/helm", version = "~> 2.9"}
-
+    time = { source = "hashicorp/time", version = "~> 0.9"}
  }
 }
 

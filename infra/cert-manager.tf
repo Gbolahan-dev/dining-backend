@@ -15,3 +15,8 @@ resource "helm_release" "cert_manager" {
     kubernetes_cluster_role_binding.cloudbuild_admin
   ]
 }
+
+resource "time_sleep" "wait_for_cert_manager" {
+  depends_on      = [helm_release.cert_manager]
+  create_duration = "60s"
+}
