@@ -53,7 +53,7 @@ resource "helm_release" "staging" {
   depends_on = [
     kubernetes_secret.db_secret_staging,
     helm_release.nginx_ingress,
-    kubernetes_manifest.letsencrypt_issuer
+    kubectl_manifest.letsencrypt_issuer
   ]
 }
 
@@ -112,6 +112,6 @@ resource "helm_release" "production" {
   depends_on = [
     kubernetes_secret.db_secret_prod,
     helm_release.nginx_ingress,
-    kubernetes_manifest.letsencrypt_issuer
+    kubectl_manifest.letsencrypt_issuer
   ]
 }
