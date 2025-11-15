@@ -15,6 +15,10 @@ resource "google_cloudbuildv2_connection" "github_connection" {
   }
 
   depends_on = [google_project_service.apis]
+  
+  lifecycle {
+    ignore_changes = [github_config[0].app_installation_id]
+  }
 }
 
 resource "google_cloudbuildv2_repository" "github_repo" {
