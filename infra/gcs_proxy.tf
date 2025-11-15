@@ -9,9 +9,16 @@ resource "google_compute_global_address" "frontend_ip" {
 # 2. Define the GCS bucket as a "Backend Bucket"
 resource "google_compute_backend_bucket" "frontend" {
   name        = "inu-dining-frontend-backend"
-  bucket_name = "inu-dining-frontend" # Your existing bucket
+  bucket_name = "inu-dining-frontend"
   enable_cdn  = true
   project     = var.project_id
+
+  cdn_policy {
+    default_ttl = 3600
+    client_ttl  = 3600
+    max_ttl     = 3600
+    negative_caching = true
+  }
 }
 
 # 3. Create an SSL certificate for the new domain
@@ -87,4 +94,11 @@ resource "google_compute_global_forwarding_rule" "frontend_redirect" {
   port_range = "80"
   ip_address = google_compute_global_address.frontend_ip.address  # Use the SAME static IP
   project    = var.project_id
+}
+
+# Make the frontend bucket publicly readable so the load balancer can serve it
+resource "google_storage_bucket_iam_member" "frontend_public" {
+  bucket = "inu-dining-frontend"
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
 }
