@@ -1,58 +1,58 @@
+ Inu Dining Backend
 
-# Production-Grade CI/CD Pipeline for a Node.js API on GKE
+This repository contains the backend API for the Inu Dining application, a NestJS service.
 
-This repository contains the complete Infrastructure as Code (Terraform) and CI/CD pipeline (Google Cloud Build) for a containerized NestJS backend application. The entire system is designed to be a repeatable, secure, and fully automated, from a `git push` to a live deployment on Google Kubernetes Engine.
+The entire infrastructure is fully automated and deployed using a production-grade Infrastructure as Code (IaC) pipeline.
 
-Live Staging URL: `http://<YOUR_BACKEND_IP>:4000/`
+ 🚀 Core Features
 
----
+  * Fully Automated CI/CD: Every `git push` to `main` (staging) or `git tag` (production) automatically builds, tests, and deploys the application.
+  * Infrastructure as Code (IaC): The entire cloud infrastructure (VPC, GKE Cluster, IAM, Secrets) is defined declaratively using Terraform.
+  * Scalable Hosting: The application is containerized with Docker and deployed to a Google Kubernetes Engine (GKE) cluster.
+  * Automated Ingress & SSL: Uses a Helm-deployed NGINX Ingress Controller for traffic routing and Cert-Manager for free, auto-renewing Let's Encrypt SSL certificates.
 
-## Architecture
+ 🛠️ Tech Stack
 
-This project follows a professional, GitOps-driven workflow:
+  * Application: NestJS (TypeScript)
+  * Database: PostgreSQL (Neon)
+  * Cloud Provider: Google Cloud Platform (GCP)
+  * CI/CD: Google Cloud Build
+  * IaC: Terraform
+  * Orchestration: Google Kubernetes Engine (GKE)
+  * Containerization: Docker
+  * Container Registry: Google Artifact Registry
+  * Service Mesh/Ingress: NGINX Ingress Controller (deployed via Helm)
+  * SSL: Cert-Manager (deployed via Helm) with Let's Encrypt
+  * Secret Management: Google Secret Manager
+  * DNS: DuckDNS
 
-`[GitHub] ---> [Cloud Build (CI/CD)] ---> [Terraform (IaC)] ---> [Helm] ---> [GKE (Staging & Prod)]`
+ 🏛️ System Architecture
 
----
+This repository manages all backend infrastructure.
 
-## Tech Stack
+1.  A `git push` triggers a Google Cloud Build pipeline.
+2.  Cloud Build runs `terraform apply` using the code in the `/infra` directory.
+3.  Terraform performs the following automated steps:
+      * Ensures GKE Cluster is Running: Manages the cluster state (`cluster.tf`).
+      * Grants Permissions: Creates a Kubernetes `ClusterRoleBinding` to give Cloud Build the `cluster-admin` rights it needs to deploy (`k8s_rbac.tf`).
+      * Deploys NGINX Controller: Installs the NGINX Ingress Controller from its official Helm chart (`ingress_controller.tf`).
+      * Deploys Cert-Manager: Installs Cert-Manager from its Helm chart (`cert-manager.tf`) and creates a `ClusterIssuer` for Let's Encrypt (`issuer.tf`).
+      * Deploys the Application: Deploys the NestJS application using its Helm chart (`helm.tf`). This step now uses `className: "nginx"` and the `cert-manager.io/cluster-issuer` annotation, automatically creating a valid SSL certificate.
+      * Deploys Frontend Infrastructure: Also creates the Google Cloud Load Balancer and Backend Bucket for the frontend (`gcs_frontend_lb.tf`).
 
-*   Cloud: Google Cloud Platform (GCP)
-*   Orchestration: Google Kubernetes Engine (GKE)
-*   Containerization: Docker
-*   Infrastructure as Code: Terraform
-*   Kubernetes Packaging: Helm
-*   CI/CD:Google Cloud Build (v2 Triggers)
-*   Application: Node.js, NestJS, Prisma, PostgreSQL
+ ⚙️ Project Setup (One-Time Manual Steps)
 
----
+To run this project from scratch, the following one-time manual steps are required:
 
-## Key Features & DevOps Principles
-
-This project was built to world-class standards, demonstrating mastery of the following DevOps principles:
-
-*   Complete Automation: The entire build, push, and deploy lifecycle is 100% automated.
-*   Infrastructure as Code: Every single cloud resource (VPC, GKE Cluster, IAM Service Accounts, Firewall rules, Secrets) is defined as code in Terraform for perfect reproducibility.
-*   Multi-Environment Workflow:**
-    *   The pipeline automatically deploys every push to the `main` branch to a Staging environment.
-    *   Production deployments are triggered only by pushing a Git version tag (e.g., `v1.0.1`), ensuring deliberate and safe releases.
-*   Secure Release Process: The production trigger is configured with a manual approval gate in Cloud Build, requiring human sign-off before any changes go live.
-*   Optimized Containerization: A multi-stage `Dockerfile` is used to create a lean, secure, and fast-building production image, separating build-time dependencies from runtime dependencies.
-*   Secret Management: Application secrets (like the `DATABASE_URL`) are securely managed in Google Secret Manager and safely projected into the Kubernetes cluster at deploy time. The secret value is never stored in the repository.
-*   Advanced Security: The system uses the modern **Workload Identity** to grant pods granular, keyless access to Google Cloud services, following the Principle of Least Privilege.
-*   Resilience and Scalability: The Kubernetes deployment is configured with a HorizontalPodAutoscaler (HPA) to automatically handle traffic spikes, and startup, liveness, and readiness probes to ensure the application is self-healing.
-
----
-
-## The Debugging Journey
-
-This project tells the story of a real-world debugging marathon, where I successfully diagnosed and solved complex, multi-layered issues related to:
-*   Terraform state corruption and "ghost" resources.
-*   Advanced IAM and Service Account permission failures.
-*   Kubernetes pod failures, including `ImagePullBackOff` and `OOMKilled` (Out of Memory).
-*   CI/CD pipeline race conditions and transient network errors.
-*   Cloud provider API incompatibilities (Cloud Build v1 vs. v2 Triggers).
-*   Application runtime configuration (`0.0.0.0` binding).
-
-This project is a testament to a deep, practical, and battle-hardened understanding of modern cloud infrastructure.
-
+1.  Grant Pipeline Permissions: The Cloud Build service account must be given `Editor` or equivalent IAM roles *before* it can run `terraform apply`.
+    
+    gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+        --member="serviceAccount:YOUR_SERVICE_ACCOUNT_EMAIL" \
+        --role="roles/editor"
+    
+2.  Point DNS Records: The DuckDNS domains (`inu-dining-api` and `api-prod`) must be manually pointed to the single External IP of the `nginx-ingress-controller-service`.
+    
+    Find the IP with:
+    kubectl get service -n kube-system nginx-ingress-ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+    
+3.  Frontend DNS: The `inu-dining-frontend` DuckDNS domain must be pointed to the static IP created by the `gcs_frontend_lb.tf` file.
